@@ -26,18 +26,41 @@ export type Board = [
 // Line type for checking bingo patterns
 export type Line = [Cell, Cell, Cell, Cell, Cell];
 
+// Cell status types
+export type CellStatus = 'bingo' | 'waiting' | 'opened' | 'closed';
+
+// Cell status map
+export type CellsMap = {
+  [row: number]: {
+    [col: number]: CellStatus;
+  };
+};
+
+// Validation error types
+export type ValidationError = {
+  type: 'duplicate' | 'out-of-range' | 'incorrect-free' | 'invalid-type' | 'invalid-length';
+  message: string;
+  position?: number;
+  value?: any;
+};
+
 // Result types for board evaluation
 export type Bingo = {
   status: 'bingo',
   bingos: { line: Line }[],
-  waitings: { lines: Line, remaining: Cell }[]
+  waitings: { lines: Line, remaining: Cell }[],
+  cells: CellsMap
 };
 
 export type Waiting = {
   status: 'waiting',
-  waitings: { lines: Line, remaining: Cell }[]
+  waitings: { lines: Line, remaining: Cell }[],
+  cells: CellsMap
 };
 
-export type None = { status: 'none' };
+export type None = { 
+  status: 'none',
+  cells: CellsMap
+};
 
 export type Result = Bingo | Waiting | None;

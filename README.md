@@ -38,6 +38,26 @@ const board = generateBoard();
 */
 ```
 
+### Create a Board
+
+```ts
+import { createBoard } from 'bingo-typescript';
+
+const cells = [
+  // B column (1-15)
+  1, 2, 3, 4, 5,
+  // I column (16-30)
+  16, 17, 18, 19, 20,
+  // N column (31-45)
+  31, 32, 'free', 33, 34,
+  // G column (46-60)
+  46, 47, 48, 49, 50,
+  // O column (61-75)
+  61, 62, 63, 64, 65
+];
+const board = createBoard(cells);
+```
+
 ### Judge a Board
 
 ```ts

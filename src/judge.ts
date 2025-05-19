@@ -1,10 +1,11 @@
-import { Board, Cell, Line, Num, Result } from './types';
+import { Board, Cell, Line, Num, Result, Bingo, Waiting, None, CellsMap, CellStatus } from './types';
 
 /**
  * Judges a Bingo board's status based on the opened numbers.
  * 
  * Analyzes a Bingo board to determine if there are any complete Bingo lines
  * (horizontal, vertical, or diagonal) or if there are any lines that are one number away from completion.
+ * Also determines the status of each cell on the board.
  * 
  * @param {Board} board - The Bingo board to judge
  * @param {Num[]} opens - Array of numbers that have been called/opened
@@ -12,6 +13,11 @@ import { Board, Cell, Line, Num, Result } from './types';
  *   - Bingo: At least one complete line
  *   - Waiting: At least one line that needs just one more number
  *   - None: No lines close to completion
+ *   - All results include cells which maps each cell to its status:
+ *     - 'bingo': Cell is part of a completed bingo line
+ *     - 'waiting': Cell is the last remaining cell in a line that needs one more number
+ *     - 'opened': Cell has been opened but is not part of a bingo or waiting line
+ *     - 'closed': Cell has not been opened
  */
 export function judgeBoard(board: Board, opens: Num[]): Result {
   // Get all possible lines (rows, columns, diagonals)
@@ -39,20 +45,28 @@ export function judgeBoard(board: Board, opens: Num[]): Result {
     }
   }
   
+  // Determine the status of each cell
+  const cells = determineAllCellStatus(board, opens, bingos, waitings);
+  
   // Determine the overall status of the board
   if (bingos.length > 0) {
     return {
       status: 'bingo',
       bingos,
-      waitings
+      waitings,
+      cells
     };
   } else if (waitings.length > 0) {
     return {
       status: 'waiting',
-      waitings
+      waitings,
+      cells
     };
   } else {
-    return { status: 'none' };
+    return { 
+      status: 'none',
+      cells
+    };
   }
 }
 
@@ -95,3 +109,64 @@ function getAllLines(board: Board): Line[] {
   
   return lines;
 }
+
+/**
+ * Determines the status of each cell on the board.
+ * 
+ * @param {Board} board - The Bingo board
+ * @param {Num[]} opens - Array of numbers that have been called/opened
+ * @param {{ line: Line }[]} bingos - Array of completed bingo lines
+ * @param {{ lines: Line, remaining: Cell }[]} waitings - Array of lines that need one more number
+ * @returns {CellsMap} Map of cell positions to their status
+ */
+function determineAllCellStatus(
+  board: Board, 
+  opens: Num[], 
+  bingos: { line: Line }[], 
+  waitings: { lines: Line, remaining: Cell }[]
+): CellsMap {
+  const cells: CellsMap = {};
+  
+  // Initialize all cells as closed
+  for (let row = 0; row < 5; row++) {
+    cells[row] = {};
+    for (let col = 0; col < 5; col++) {
+      cells[row][col] = 'closed';
+    }
+  }
+  
+  // Set all opened cells to 'opened'
+  for (let row = 0; row < 5; row++) {
+    for (let col = 0; col < 5; col++) {
+      const cell = board[row][col];
+      if (cell === 'free' || opens.includes(cell as Num)) {
+        cells[row][col] = 'opened';
+      }
+    }
+  }
+  
+  // Set cells that are part of a bingo to 'bingo'
+  for (const { line } of bingos) {
+    for (let row = 0; row < 5; row++) {
+      for (let col = 0; col < 5; col++) {
+        if (line.includes(board[row][col])) {
+          cells[row][col] = 'bingo';
+        }
+      }
+    }
+  }
+  
+  // Set remaining cells in waiting lines to 'waiting'
+  for (const { remaining } of waitings) {
+    for (let row = 0; row < 5; row++) {
+      for (let col = 0; col < 5; col++) {
+        if (board[row][col] === remaining) {
+          cells[row][col] = 'waiting';
+        }
+      }
+    }
+  }
+  
+  return cells;
+}
+
