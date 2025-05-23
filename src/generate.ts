@@ -33,8 +33,7 @@ export function generateBoard(): Board {
     [oColumn[0], oColumn[1], oColumn[2], oColumn[3], oColumn[4]]
   ];
 
-  // Transpose the board to match the expected format
-  return transposeBoard(board);
+  return board;
 }
 
 /**
@@ -60,25 +59,4 @@ function getRandomUniqueNumbers(min: number, max: number, count: number): number
 
   // Return the first 'count' elements
   return numbers.slice(0, count);
-}
-
-/**
- * Transposes the board from column-based to row-based format.
- * 
- * @param {any[][]} board - The column-based board to transpose
- * @returns {Board} The transposed board in row-based format
- */
-function transposeBoard(board: any[][]): Board {
-  const transposed: any[][] = Array(5).fill(null).map(() => Array(5).fill(null));
-  
-  for (let row = 0; row < 5; row++) {
-    for (let col = 0; col < 5; col++) {
-      transposed[row][col] = board[col][row];
-    }
-  }
-  
-  // Override the center with 'free'
-  transposed[2][2] = 'free';
-  
-  return transposed as Board;
 }
