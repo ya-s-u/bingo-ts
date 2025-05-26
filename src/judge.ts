@@ -25,7 +25,7 @@ export function judgeBoard(board: Board, opens: Num[]): Result {
   
   // Find complete bingo lines and waiting lines
   const bingos: { line: Line }[] = [];
-  const waitings: { lines: Line, remaining: Cell }[] = [];
+  const waitings: { lines: Line, remaining: Num }[] = [];
   
   for (const line of lines) {
     const remainingCells = line.filter(cell => {
@@ -40,7 +40,7 @@ export function judgeBoard(board: Board, opens: Num[]): Result {
       // This line needs just one more number
       waitings.push({ 
         lines: line, 
-        remaining: remainingCells[0] 
+        remaining: remainingCells[0] as Num
       });
     }
   }
