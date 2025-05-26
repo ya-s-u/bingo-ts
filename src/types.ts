@@ -48,13 +48,13 @@ export type ValidationError = {
 export type Bingo = {
   status: 'bingo',
   bingos: { line: Line }[],
-  waitings: { lines: Line, remaining: Cell }[],
+  waitings: { lines: Line, remaining: Num }[],
   cells: CellsMap
 };
 
 export type Waiting = {
   status: 'waiting',
-  waitings: { lines: Line, remaining: Cell }[],
+  waitings: { lines: Line, remaining: Num }[],
   cells: CellsMap
 };
 
