@@ -156,12 +156,21 @@ function determineAllCellStatus(
     }
   }
   
-  // Set remaining cells in waiting lines to 'waiting'
-  for (const { remaining } of waitings) {
+  // Set opened cells in waiting lines to 'waiting' (except the remaining cell)
+  for (const { lines, remaining } of waitings) {
     for (let row = 0; row < 5; row++) {
       for (let col = 0; col < 5; col++) {
-        if (board[row][col] === remaining) {
-          cells[row][col] = 'waiting';
+        const cell = board[row][col];
+        // If this cell is in the waiting line
+        if (lines.includes(cell)) {
+          // If it's the remaining cell, keep it as 'closed'
+          if (cell === remaining) {
+            // Already set to 'closed', so do nothing
+          } 
+          // If it's an opened cell in the waiting line, set to 'waiting'
+          else if (cells[row][col] === 'opened') {
+            cells[row][col] = 'waiting';
+          }
         }
       }
     }

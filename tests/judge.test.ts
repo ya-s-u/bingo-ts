@@ -222,11 +222,15 @@ describe('judgeBoard', () => {
     expect(cells[3][2]).toBe('bingo'); // 33
     expect(cells[4][2]).toBe('bingo'); // 34
     
-    // Check waiting cell (last in first row)
-    expect(cells[0][4]).toBe('waiting'); // 61
+    // Check waiting cells in the first row (opened cells in a waiting line)
+    expect(cells[0][0]).toBe('waiting'); // 1 (opened, in waiting line)
+    expect(cells[0][1]).toBe('waiting'); // 16 (opened, in waiting line)
+    expect(cells[0][3]).toBe('waiting'); // 46 (opened, in waiting line)
+    
+    // Check the remaining cell in the waiting line (should stay closed)
+    expect(cells[0][4]).toBe('closed'); // 61 (not opened, remaining cell)
     
     // Check opened cells that are not part of bingo or waiting
-    expect(cells[0][0]).toBe('opened'); // 1
     expect(cells[1][0]).toBe('opened'); // 2
     expect(cells[3][1]).toBe('opened'); // 19
     

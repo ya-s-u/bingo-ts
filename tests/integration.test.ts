@@ -26,7 +26,11 @@ describe('Integration tests', () => {
     if (result.status === 'waiting') {
       expect(result.waitings.some(w => w.remaining === firstRow[4])).toBe(true);
       // Check cell status
-      expect(result.cells[0][4]).toBe('waiting'); // The last cell in the row should be 'waiting'
+      expect(result.cells[0][4]).toBe('closed'); // The last cell in the row should remain 'closed'
+      // Check that opened cells in the waiting line are 'waiting'
+      for (let col = 0; col < 4; col++) {
+        expect(result.cells[0][col]).toBe('waiting');
+      }
     }
     
     // Test with complete row
